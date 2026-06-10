@@ -12,7 +12,7 @@ namespace MovieManagement.Domain.Entities
         public int Id { get; set; }
         public string Titulo { get; set; } = null!; //Operador null forgiving, inicia nulo porém vai ser preenchido
         public int Ano { get; set; }
-        public string Lingua { get; set; }
+        public string Lingua { get; set; } = null!;
         public double Classificacao { get; set; }
 
         //Construtor vazio para ser usado para BD "criar" objetos posteriormente

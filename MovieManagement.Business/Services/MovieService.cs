@@ -18,7 +18,7 @@ namespace MovieManagement.Business.Services
         }
 
         // Aplicar regra de negócio para Adicionar um Filme
-        public void AdicionarFilme(string titulo, string lingua, double classificacao)
+        public void AdicionarFilme(string titulo, int ano, string lingua, double classificacao)
         {
             
             if (string.IsNullOrEmpty(titulo)) // testa se é nulo ou vazio para caso seja, não adicionar
@@ -37,9 +37,17 @@ namespace MovieManagement.Business.Services
                 throw new ArgumentOutOfRangeException(nameof(classificacao), "A classificação deve estar obrigatoriamente entre 0 e 5.");
             }
 
+            var existente = _repositorio.ProcurarPorTitulo(titulo);
+            
+            if (existente != null)
+            {
+                    throw new Exception("Já existe um filme com esse título.");
+            }
+
             // Se os dados passarem nas regras acima, criamos a entidade Filme
             Movie novoFilme = new Movie();
             novoFilme.Titulo = titulo;
+            novoFilme.Ano = ano;
             novoFilme.Lingua = lingua;
             novoFilme.Classificacao= classificacao;
 
