@@ -9,16 +9,20 @@ namespace MovieManagement.Business.Services
         // garante que essa referência não seja alterada depois de inicializada.
 
         private readonly IMovieRepository _repositorio;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly IDirectorRepository _directorRepo;
 
         // O construtor injeta dependência a classe business não cria o repositório usando 'new',
         // ele recebe o repositório pronto através do construtor.
-        public MovieService(IMovieRepository repositorio)
+        public MovieService(IMovieRepository repositorio, ICategoryRepository categoryRepo, IDirectorRepository directorRepo)
         {
             _repositorio = repositorio;
+            _categoryRepo = categoryRepo;
+            _directorRepo = directorRepo;
         }
 
         // Aplicar regra de negócio para Adicionar um Filme
-        public void AdicionarFilme(string titulo, int ano, string lingua, double classificacao)
+        public void AdicionarFilme(string titulo, int ano, string lingua, double classificacao, int categoryId, int directorId)
         {
             
             if (string.IsNullOrEmpty(titulo)) // testa se é nulo ou vazio para caso seja, não adicionar
@@ -44,12 +48,27 @@ namespace MovieManagement.Business.Services
                     throw new Exception("Já existe um filme com esse título.");
             }
 
+            // Bloqueia se o ID da categoria não existir na lista
+
+            var categoriaExistente = _categoryRepo.ListarTodos().Find(c => c.Id == categoryId);
+            if (categoriaExistente == null)
+                throw new Exception("A categoria informada não existe no sistema.");
+
+            // Bloqueia se o ID do diretor não existir na lista
+
+            var directorExistente = _directorRepo.ListarTodos().Find(d => d.Id == directorId);
+            if (directorExistente == null)
+                throw new Exception("O realizador informado não existe no sistema.");
+
             // Se os dados passarem nas regras acima, criamos a entidade Filme
             Movie novoFilme = new Movie();
             novoFilme.Titulo = titulo;
             novoFilme.Ano = ano;
             novoFilme.Lingua = lingua;
             novoFilme.Classificacao= classificacao;
+
+            novoFilme.CategoryId = categoryId;
+            novoFilme.DirectorId = directorId;
 
             // A camada de negócio prepara o objeto e delega o salvamento para a camada de dados
             _repositorio.Adicionar(novoFilme);

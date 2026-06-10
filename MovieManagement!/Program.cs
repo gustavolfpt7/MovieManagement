@@ -8,12 +8,12 @@ namespace MovieManagementUi
     class Program
     {
         // Instanciação única dos repositórios em memória nesta fase 
-        private static readonly MovieRepository _movieRepo = new MovieRepository();
-        private static readonly CategoryRepository _categoryRepo = new CategoryRepository();
-        private static readonly DirectorRepository _directorRepo = new DirectorRepository();
+        private static readonly MovieSqliteRepository _movieRepo = new MovieSqliteRepository();
+        private static readonly CategorySqliteRepository _categoryRepo = new CategorySqliteRepository();
+        private static readonly DirectorSqliteRepository _directorRepo = new DirectorSqliteRepository();
 
         // Inicialização dos serviços injetando os repositórios
-        private static readonly MovieService _movieService = new MovieService(_movieRepo);
+        private static readonly MovieService _movieService = new MovieService(_movieRepo, _categoryRepo, _directorRepo);
         private static readonly CategoryService _categoryService = new CategoryService(_categoryRepo);
         private static readonly DirectorService _directorService = new DirectorService(_directorRepo);
 
@@ -66,7 +66,10 @@ namespace MovieManagementUi
                         Console.Write("Ano: "); int ano = int.Parse(Console.ReadLine());
                         Console.Write("Língua: "); string l = Console.ReadLine();
                         Console.Write("Classificação (0-5): "); double c = double.Parse(Console.ReadLine());
-                        _movieService.AdicionarFilme(t, ano, l, c);
+                        // Pergunta pelos IDs que servirão de relação
+                        Console.Write("ID da Categoria existente: "); int catId = int.Parse(Console.ReadLine());
+                        Console.Write("ID do Realizador existente: "); int dirId = int.Parse(Console.ReadLine());
+                        _movieService.AdicionarFilme(t, ano, l, c, catId, dirId);
                         Console.WriteLine("Filme adicionado com sucesso!");
                         break;
                     case "2":

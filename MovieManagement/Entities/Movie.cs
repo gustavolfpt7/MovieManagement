@@ -15,6 +15,9 @@ namespace MovieManagement.Domain.Entities
         public string Lingua { get; set; } = null!;
         public double Classificacao { get; set; }
 
+        public int CategoryId { get; set; }
+        public int DirectorId { get; set; }
+
         //Construtor vazio para ser usado para BD "criar" objetos posteriormente
         public Movie() { }
 
